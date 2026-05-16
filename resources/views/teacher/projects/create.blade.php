@@ -113,31 +113,64 @@
                     >
                 </div>
 
-                {{-- GROUP --}}
+                {{-- ASSIGNMENT MODE --}}
                 <div class="field">
+                    <label>Assignment Type</label>
+                    <div style="display:flex;gap:0;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;width:fit-content;margin-bottom:1rem;">
+                        <button type="button" id="tab-group"
+                                onclick="switchAssignMode('group')"
+                                style="padding:.5rem 1.2rem;font-size:.85rem;font-weight:600;border:none;cursor:pointer;background:#4f46e5;color:white;">
+                            👥 Assign to Group
+                        </button>
+                        <button type="button" id="tab-individual"
+                                onclick="switchAssignMode('individual')"
+                                style="padding:.5rem 1.2rem;font-size:.85rem;font-weight:600;border:none;cursor:pointer;background:white;color:#6b7280;">
+                            🧑 Assign to Students
+                        </button>
+                    </div>
 
-                    <label>Assign to Group</label>
+                    {{-- GROUP PANEL --}}
+                    <div id="panel-group">
+                        <select name="group_id" id="groupSelect">
+                            <option value="">-- Select Group (optional) --</option>
+                            @foreach(auth()->user()->groups()->get() as $group)
+                                <option value="{{ $group->id }}"
+                                    {{ old('group_id') == $group->id ? 'selected' : '' }}>
+                                    {{ $group->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                    <select
-                        name="group_id"
-                        id="groupSelect"
-                        required
-                    >
-                        <option value="">
-                            -- Select Group --
-                        </option>
-
-                        @foreach(auth()->user()->groups()->get() as $group)
-
-                            <option
-                                value="{{ $group->id }}"
-                                {{ old('group_id') == $group->id ? 'selected' : '' }}
-                            >
-                                {{ $group->name }}
-                            </option>
-
-                        @endforeach
-                    </select>
+                    {{-- INDIVIDUAL STUDENTS PANEL --}}
+                    <div id="panel-individual" style="display:none;">
+                        @php $myStudents = auth()->user()->myStudents()->orderBy('name')->get(); @endphp
+                        @if($myStudents->isEmpty())
+                            <div style="padding:1rem;background:#f9fafb;border:1px dashed #d1d5db;border-radius:10px;color:#6b7280;font-size:.85rem;">
+                                No students registered under your code yet. Students must enter your teacher code first.
+                            </div>
+                        @else
+                            <div style="padding:1rem;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;max-height:220px;overflow-y:auto;">
+                                <div style="font-size:.78rem;color:#6b7280;margin-bottom:.65rem;">Select students to assign to this project:</div>
+                                @foreach($myStudents as $st)
+                                    <label style="display:flex;align-items:center;gap:.6rem;padding:.4rem .2rem;cursor:pointer;">
+                                        <input type="checkbox"
+                                               name="student_ids[]"
+                                               value="{{ $st->id }}"
+                                               {{ in_array($st->id, old('student_ids', [])) ? 'checked' : '' }}
+                                               style="width:16px;height:16px;accent-color:#4f46e5;">
+                                        <span style="font-weight:600;font-size:.88rem;">{{ $st->name }}</span>
+                                        @if($st->student_id)
+                                            <span style="font-size:.75rem;color:#9ca3af;">🆔 {{ $st->student_id }}</span>
+                                        @endif
+                                    </label>
+                                @endforeach
+                            </div>
+                            <div style="margin-top:.5rem;font-size:.75rem;color:#6b7280;">
+                                Each selected student will receive this project individually and be graded separately.
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 {{-- START DATE --}}
@@ -291,4 +324,38 @@
 
 @section('scripts')
 <script src="{{ asset('assets/js/pages/teacher-project-create.js') }}"></script>
+<script>
+function switchAssignMode(mode) {
+    var groupPanel      = document.getElementById('panel-group');
+    var individualPanel = document.getElementById('panel-individual');
+    var groupBtn        = document.getElementById('tab-group');
+    var individualBtn   = document.getElementById('tab-individual');
+
+    if (mode === 'group') {
+        groupPanel.style.display      = 'block';
+        individualPanel.style.display = 'none';
+        groupBtn.style.background     = '#4f46e5';
+        groupBtn.style.color          = 'white';
+        individualBtn.style.background = 'white';
+        individualBtn.style.color      = '#6b7280';
+        // Uncheck all individual checkboxes
+        document.querySelectorAll('input[name="student_ids[]"]').forEach(function(cb){ cb.checked = false; });
+    } else {
+        groupPanel.style.display      = 'none';
+        individualPanel.style.display = 'block';
+        individualBtn.style.background = '#4f46e5';
+        individualBtn.style.color      = 'white';
+        groupBtn.style.background      = 'white';
+        groupBtn.style.color           = '#6b7280';
+        // Clear group select
+        var gs = document.getElementById('groupSelect');
+        if (gs) gs.value = '';
+    }
+}
+
+// Restore mode on validation error
+@if(old('student_ids'))
+    switchAssignMode('individual');
+@endif
+</script>
 @endsection

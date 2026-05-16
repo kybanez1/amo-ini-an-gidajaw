@@ -80,7 +80,9 @@ class ProjectController extends Controller
 
             'requirements' => 'nullable|string|max:5000',
 
-            'group_id' => 'nullable|exists:groups,id',
+            'group_id'    => 'nullable|exists:groups,id',
+            'student_ids'   => 'nullable|array',
+            'student_ids.*' => 'exists:users,id',
 
             'start_date' => 'nullable|date',
 
@@ -204,10 +206,21 @@ class ProjectController extends Controller
         |--------------------------------------------------------------------------
         */
         if ($project->group) {
+            $project->assignToGroup($project->group);
+        }
 
-            $project->assignToGroup(
-                $project->group
-            );
+        /*
+        |--------------------------------------------------------------------------
+        | ASSIGN INDIVIDUAL STUDENTS (when no group is selected)
+        |--------------------------------------------------------------------------
+        */
+        if (!empty($validated['student_ids'])) {
+            foreach ($validated['student_ids'] as $studentId) {
+                $student = User::find($studentId);
+                if ($student && $student->role === 'student') {
+                    $project->assignToStudent($student);
+                }
+            }
         }
 
         return redirect()
@@ -255,14 +268,11 @@ class ProjectController extends Controller
         | SUBMISSIONS
         |--------------------------------------------------------------------------
         */
-        $submissions = ProjectSubmission::where(
-                'project_id',
-                $project->id
-            )
-            ->with([
-                'student',
-                'task',
-            ])
+        // Only show task submissions (whereNotNull task_id) to avoid confusing
+        // "General Submission" duplicates. Null-task_id records are legacy/internal only.
+        $submissions = ProjectSubmission::where('project_id', $project->id)
+            ->whereNotNull('task_id')
+            ->with(['student', 'task'])
             ->latest()
             ->paginate(15);
 

@@ -263,6 +263,17 @@ Route::prefix('teacher')
                 'projects/{project}/grades/project-grade',
                 [GradeController::class, 'storeProjectGrade']
             )->name('grades.storeProject');
+
+            // Individual student grading
+            Route::get(
+                'projects/{project}/grade/student/{student}',
+                [GradeController::class, 'editIndividual']
+            )->name('grades.individual.edit');
+
+            Route::post(
+                'projects/{project}/grade/student/{student}',
+                [GradeController::class, 'storeIndividual']
+            )->name('grades.individual.store');
         });
     });
 

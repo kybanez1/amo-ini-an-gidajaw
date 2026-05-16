@@ -137,19 +137,16 @@ class StudentProjectController extends Controller
             403
         );
 
+        // Eager-load tasks so the view can iterate them
+        $project->loadMissing(['teacher', 'tasks', 'group']);
+
         /*
         |--------------------------------------------------------------------------
-        | LOAD SUBMISSIONS
+        | LOAD SUBMISSIONS — keyed by task_id so view can do $submissions->get($task->id)
         |--------------------------------------------------------------------------
         */
-        $submissions = ProjectSubmission::where(
-                'student_id',
-                $student->id
-            )
-            ->where(
-                'project_id',
-                $project->id
-            )
+        $submissions = ProjectSubmission::where('student_id', $student->id)
+            ->where('project_id', $project->id)
             ->get()
             ->keyBy('task_id');
 
@@ -269,15 +266,19 @@ class StudentProjectController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | FIND SUBMISSION
+        | FIND SUBMISSION — null-safe task_id so each task tracked separately
         |--------------------------------------------------------------------------
         */
-        $submission = ProjectSubmission::where([
-                'project_id' => $project->id,
-                'student_id' => $student->id,
-                'task_id'    => $taskId,
-            ])
-            ->first();
+        $submissionQuery = ProjectSubmission::where('project_id', $project->id)
+            ->where('student_id', $student->id);
+
+        if ($taskId) {
+            $submissionQuery->where('task_id', $taskId);
+        } else {
+            $submissionQuery->whereNull('task_id');
+        }
+
+        $submission = $submissionQuery->first();
 
         /*
         |--------------------------------------------------------------------------

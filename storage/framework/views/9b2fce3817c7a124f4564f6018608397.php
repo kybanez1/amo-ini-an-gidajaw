@@ -101,9 +101,79 @@
         <div class="body">
             <div class="btn-row">
                 <a href="<?php echo e(route('teacher.projects.edit', $project->id)); ?>" class="btn btn-primary">✏️ Edit Project</a>
-                <a href="<?php echo e(route('teacher.grades.project', $project->id)); ?>" class="btn btn-outline">⭐ Grade All</a>
+                <?php if($project->group_id): ?>
+                    <a href="<?php echo e(route('teacher.grades.project', $project->id)); ?>" class="btn btn-outline">⭐ Grade All (Group)</a>
+                <?php else: ?>
+                    <a href="<?php echo e(route('teacher.grades.project', $project->id)); ?>" class="btn btn-outline">⭐ View Grades</a>
+                <?php endif; ?>
                 <a href="<?php echo e(route('teacher.projects.index')); ?>" class="btn btn-outline">← Back</a>
             </div>
+        </div>
+    </div>
+
+    
+    <div class="card">
+        <div class="header">🧑‍🎓 Assigned Students</div>
+        <div class="table-wrap">
+            <?php
+                $assignedStudents = $project->assignments()->get();
+            ?>
+            <?php if($assignedStudents->isEmpty()): ?>
+                <div style="padding:2rem;text-align:center;color:#9ca3af;">No students assigned yet.</div>
+            <?php else: ?>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Status</th>
+                        <th>Score</th>
+                        <th>Graded At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $__currentLoopData = $assignedStudents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $assignedStudent): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php
+                        $pivot = $assignedStudent->pivot;
+                        $pStatus = $pivot->assignment_status ?? 'assigned';
+                    ?>
+                    <tr>
+                        <td>
+                            <div class="student-name"><?php echo e($assignedStudent->name); ?></div>
+                            <?php if($assignedStudent->student_id): ?>
+                                <div style="font-size:.72rem;color:#6b7280;">🆔 <?php echo e($assignedStudent->student_id); ?></div>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <span class="status-pill
+                                <?php echo e($pStatus === 'graded' ? 'status-graded' : ($pStatus === 'submitted' ? 'status-submitted' : 'status-pending')); ?>">
+                                <?php echo e(ucfirst($pStatus)); ?>
+
+                            </span>
+                        </td>
+                        <td>
+                            <?php if($pivot && $pivot->score !== null): ?>
+                                <strong><?php echo e($pivot->score); ?></strong> / <?php echo e($project->max_score); ?>
+
+                            <?php else: ?> —
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php echo e($pivot && $pivot->graded_at ? \Carbon\Carbon::parse($pivot->graded_at)->format('M d, Y') : '—'); ?>
+
+                        </td>
+                        <td>
+                            <a href="<?php echo e(route('teacher.grades.individual.edit', [$project->id, $assignedStudent->id])); ?>"
+                               class="btn btn-primary" style="font-size:.78rem;padding:.45rem .8rem;">
+                                ⭐ <?php echo e($pStatus === 'graded' ? 'Update Grade' : 'Grade'); ?>
+
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -189,7 +259,7 @@
                                     </div>
                                 <?php endif; ?>
                             </td>
-                            <td><?php echo e($submission->task->title ?? 'General Submission'); ?></td>
+                            <td><?php echo e($submission->task->title ?? '—'); ?></td>
                             <td>
                                 <span class="status-pill
                                     <?php echo e($submission->status === 'graded'
@@ -231,7 +301,7 @@
                                         👁 View
                                     </a>
                                     
-                                    <a href="<?php echo e(route('teacher.grades.edit', [$project->id, $submission->student_id])); ?>"
+                                    <a href="<?php echo e(route('teacher.grades.individual.edit', [$project->id, $submission->student_id])); ?>"
                                        class="btn btn-primary" style="font-size:.78rem;padding:.45rem .8rem;">
                                         ⭐ Grade
                                     </a>

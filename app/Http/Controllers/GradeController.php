@@ -147,4 +147,99 @@ class GradeController extends Controller
     {
         return $this->storeProjectGrade($request, $project);
     }
+
+    /**
+     * INDIVIDUAL STUDENT GRADE FORM
+     */
+    public function editIndividual(Project $project, User $student): View
+    {
+        $teacher = auth()->user();
+
+        if (!$teacher || !$teacher->isTeacher() || $project->teacher_id !== $teacher->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Ensure student is assigned
+        $assignment = $project->assignments()->where('users.id', $student->id)->first();
+        if (!$assignment) {
+            $project->assignToStudent($student);
+            $assignment = $project->assignments()->where('users.id', $student->id)->first();
+        }
+
+        // Get all task submissions for this student
+        $taskSubmissions = ProjectSubmission::where('project_id', $project->id)
+            ->where('student_id', $student->id)
+            ->whereNotNull('task_id')
+            ->get()
+            ->keyBy('task_id');
+
+        // General (no-task) submission
+        $generalSubmission = ProjectSubmission::where('project_id', $project->id)
+            ->where('student_id', $student->id)
+            ->whereNull('task_id')
+            ->latest()
+            ->first();
+
+        $project->loadMissing(['tasks']);
+
+        return view('teacher.grade.individual', compact(
+            'project', 'student', 'assignment', 'taskSubmissions', 'generalSubmission'
+        ));
+    }
+
+    /**
+     * SAVE INDIVIDUAL STUDENT GRADE
+     */
+    public function storeIndividual(Request $request, Project $project, User $student): RedirectResponse
+    {
+        $teacher = auth()->user();
+
+        if (!$teacher || !$teacher->isTeacher() || $project->teacher_id !== $teacher->id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $validated = $request->validate([
+            'score'    => ['required', 'numeric', 'min:0', 'max:' . $project->max_score],
+            'feedback' => 'nullable|string|max:5000',
+        ]);
+
+        // Update pivot record
+        if ($project->assignments()->where('users.id', $student->id)->exists()) {
+            $project->assignments()->updateExistingPivot($student->id, [
+                'assignment_status' => 'graded',
+                'score'             => $validated['score'],
+                'feedback'          => $validated['feedback'] ?? null,
+                'graded_at'         => now(),
+            ]);
+        } else {
+            $project->assignToStudent($student);
+            $project->assignments()->updateExistingPivot($student->id, [
+                'assignment_status' => 'graded',
+                'score'             => $validated['score'],
+                'feedback'          => $validated['feedback'] ?? null,
+                'graded_at'         => now(),
+            ]);
+        }
+
+        // Update general submission grade if exists
+        $submission = ProjectSubmission::where('project_id', $project->id)
+            ->where('student_id', $student->id)
+            ->whereNull('task_id')
+            ->latest()
+            ->first();
+
+        if ($submission) {
+            $submission->update([
+                'status'    => 'graded',
+                'score'     => $validated['score'],
+                'feedback'  => $validated['feedback'] ?? null,
+                'graded_at' => now(),
+            ]);
+        }
+
+        return redirect()
+            ->route('teacher.projects.show', $project->id)
+            ->with('success', $student->name . ' graded successfully!');
+    }
+
 }

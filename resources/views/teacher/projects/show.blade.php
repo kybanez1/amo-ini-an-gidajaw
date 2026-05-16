@@ -97,9 +97,75 @@
         <div class="body">
             <div class="btn-row">
                 <a href="{{ route('teacher.projects.edit', $project->id) }}" class="btn btn-primary">✏️ Edit Project</a>
-                <a href="{{ route('teacher.grades.project', $project->id) }}" class="btn btn-outline">⭐ Grade All</a>
+                @if($project->group_id)
+                    <a href="{{ route('teacher.grades.project', $project->id) }}" class="btn btn-outline">⭐ Grade All (Group)</a>
+                @else
+                    <a href="{{ route('teacher.grades.project', $project->id) }}" class="btn btn-outline">⭐ View Grades</a>
+                @endif
                 <a href="{{ route('teacher.projects.index') }}" class="btn btn-outline">← Back</a>
             </div>
+        </div>
+    </div>
+
+    {{-- ASSIGNED STUDENTS PANEL --}}
+    <div class="card">
+        <div class="header">🧑‍🎓 Assigned Students</div>
+        <div class="table-wrap">
+            @php
+                $assignedStudents = $project->assignments()->get();
+            @endphp
+            @if($assignedStudents->isEmpty())
+                <div style="padding:2rem;text-align:center;color:#9ca3af;">No students assigned yet.</div>
+            @else
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Status</th>
+                        <th>Score</th>
+                        <th>Graded At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($assignedStudents as $assignedStudent)
+                    @php
+                        $pivot = $assignedStudent->pivot;
+                        $pStatus = $pivot->assignment_status ?? 'assigned';
+                    @endphp
+                    <tr>
+                        <td>
+                            <div class="student-name">{{ $assignedStudent->name }}</div>
+                            @if($assignedStudent->student_id)
+                                <div style="font-size:.72rem;color:#6b7280;">🆔 {{ $assignedStudent->student_id }}</div>
+                            @endif
+                        </td>
+                        <td>
+                            <span class="status-pill
+                                {{ $pStatus === 'graded' ? 'status-graded' : ($pStatus === 'submitted' ? 'status-submitted' : 'status-pending') }}">
+                                {{ ucfirst($pStatus) }}
+                            </span>
+                        </td>
+                        <td>
+                            @if($pivot && $pivot->score !== null)
+                                <strong>{{ $pivot->score }}</strong> / {{ $project->max_score }}
+                            @else —
+                            @endif
+                        </td>
+                        <td>
+                            {{ $pivot && $pivot->graded_at ? \Carbon\Carbon::parse($pivot->graded_at)->format('M d, Y') : '—' }}
+                        </td>
+                        <td>
+                            <a href="{{ route('teacher.grades.individual.edit', [$project->id, $assignedStudent->id]) }}"
+                               class="btn btn-primary" style="font-size:.78rem;padding:.45rem .8rem;">
+                                ⭐ {{ $pStatus === 'graded' ? 'Update Grade' : 'Grade' }}
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @endif
         </div>
     </div>
 
@@ -183,7 +249,7 @@
                                     </div>
                                 @endif
                             </td>
-                            <td>{{ $submission->task->title ?? 'General Submission' }}</td>
+                            <td>{{ $submission->task->title ?? '—' }}</td>
                             <td>
                                 <span class="status-pill
                                     {{ $submission->status === 'graded'
@@ -221,8 +287,8 @@
                                        class="btn btn-outline" style="font-size:.78rem;padding:.45rem .8rem;">
                                         👁 View
                                     </a>
-                                    {{-- Grade via GradeController (per-student, with pivot) --}}
-                                    <a href="{{ route('teacher.grades.edit', [$project->id, $submission->student_id]) }}"
+                                    {{-- Individual grade per student --}}
+                                    <a href="{{ route('teacher.grades.individual.edit', [$project->id, $submission->student_id]) }}"
                                        class="btn btn-primary" style="font-size:.78rem;padding:.45rem .8rem;">
                                         ⭐ Grade
                                     </a>

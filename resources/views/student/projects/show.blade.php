@@ -128,25 +128,9 @@
                     @foreach($project->tasks as $task)
 
                         @php
-
-                            /*
-                            |--------------------------------------------------------------------------
-                            | CHECK STUDENT SUBMISSION
-                            |--------------------------------------------------------------------------
-                            */
-
-                            $taskSubmission = \App\Models\ProjectSubmission::where([
-                                'project_id' => $project->id,
-                                'task_id'    => $task->id,
-                                'student_id' => auth()->id(),
-                            ])->whereIn('status', [
-                                'submitted',
-                                'reviewed',
-                                'graded'
-                            ])->first();
-
-                            $isCompleted = $taskSubmission ? true : false;
-
+                            // Use pre-loaded $submissions collection (keyed by task_id)
+                            $taskSubmission = $submissions->get($task->id);
+                            $isCompleted = $taskSubmission && in_array($taskSubmission->status, ['submitted', 'reviewed', 'graded']);
                         @endphp
 
                         <div class="task-card">
