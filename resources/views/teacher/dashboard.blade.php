@@ -166,4 +166,23 @@
 </div>
 @endsection
 
+@section('scripts')
 <script src="{{ asset('assets/js/pages/teacher-dashboard.js') }}"></script>
+<script>
+function copyTeacherCode() {
+    var code = '{{ Auth::user()->teacher_code ?? "" }}';
+    navigator.clipboard.writeText(code).then(function() {
+        alert('Teacher code ' + code + ' copied!');
+    }).catch(function() {
+        // Fallback for browsers that don't support clipboard API
+        var el = document.createElement('textarea');
+        el.value = code;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        alert('Teacher code ' + code + ' copied!');
+    });
+}
+</script>
+@endsection

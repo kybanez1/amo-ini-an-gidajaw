@@ -1,30 +1,30 @@
-@extends('layouts.app')
+<?php $__env->startPush('styles'); ?>
+<link rel="stylesheet" href="<?php echo e(asset('assets/css/pages/student-submit.css')); ?>">
+<?php $__env->stopPush(); ?>
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/pages/student-submit.css') }}">
-@endpush
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="submit-wrap">
 
-    <a href="{{ route('student.projects.show', $project->id) }}"
+    <a href="<?php echo e(route('student.projects.show', $project->id)); ?>"
        class="page-back">
         ← Back to Project
     </a>
 
-    @if(session('success'))
+    <?php if(session('success')): ?>
         <div class="alert-success">
-            ✅ {{ session('success') }}
-        </div>
-    @endif
+            ✅ <?php echo e(session('success')); ?>
 
-    @if(session('error'))
+        </div>
+    <?php endif; ?>
+
+    <?php if(session('error')): ?>
         <div class="alert-error">
-            ❌ {{ session('error') }}
-        </div>
-    @endif
+            ❌ <?php echo e(session('error')); ?>
 
-    @php
+        </div>
+    <?php endif; ?>
+
+    <?php
 
         $task = $task ?? null;
 
@@ -67,41 +67,42 @@
 
         $isOverdue = now()->isAfter($due);
 
-    @endphp
+    ?>
 
-    {{-- DEADLINE --}}
-    @if(!$isSubmitted && !$isGraded)
+    
+    <?php if(!$isSubmitted && !$isGraded): ?>
 
     <div style="padding:.75rem 1.1rem;border-radius:12px;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;
-        {{ $isOverdue ? 'background:#fef2f2;border:1px solid #fecaca;color:#991b1b;' : ($daysLeft <= 3 ? 'background:#fff7ed;border:1px solid #fdba74;color:#9a3412;' : 'background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;') }}">
+        <?php echo e($isOverdue ? 'background:#fef2f2;border:1px solid #fecaca;color:#991b1b;' : ($daysLeft <= 3 ? 'background:#fff7ed;border:1px solid #fdba74;color:#9a3412;' : 'background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;')); ?>">
 
         <span style="font-size:1.3rem;">
-            {{ $isOverdue ? '🔴' : ($daysLeft <= 3 ? '🟡' : '🟢') }}
+            <?php echo e($isOverdue ? '🔴' : ($daysLeft <= 3 ? '🟡' : '🟢')); ?>
+
         </span>
 
         <span style="font-weight:600;font-size:.875rem;">
 
-            @if($isOverdue)
+            <?php if($isOverdue): ?>
 
                 ⚠️ This task is overdue.
 
-            @elseif($daysLeft === 0)
+            <?php elseif($daysLeft === 0): ?>
 
                 ⏰ Due today!
 
-            @else
+            <?php else: ?>
 
-                ⏳ {{ (int)$daysLeft }} day(s) left.
+                ⏳ <?php echo e((int)$daysLeft); ?> day(s) left.
 
-            @endif
+            <?php endif; ?>
 
         </span>
 
     </div>
 
-    @endif
+    <?php endif; ?>
 
-    {{-- PROJECT --}}
+    
     <div class="project-banner">
 
         <div style="font-size:2rem;">📂</div>
@@ -109,48 +110,53 @@
         <div>
 
             <div class="project-banner-title">
-                {{ $project->title }}
+                <?php echo e($project->title); ?>
+
             </div>
 
             <div class="project-banner-meta">
 
                 Teacher:
-                {{ $project->teacher->name ?? '—' }}
+                <?php echo e($project->teacher->name ?? '—'); ?>
+
 
                 ·
 
                 Max Score:
-                {{ $project->max_score }}
+                <?php echo e($project->max_score); ?>
+
 
             </div>
 
-            @if($task)
+            <?php if($task): ?>
 
             <div style="margin-top:10px;">
 
                 <div style="font-weight:700;color:#4338ca;">
                     📋 Task:
-                    {{ $task->title }}
+                    <?php echo e($task->title); ?>
+
                 </div>
 
-                @if($task->description)
+                <?php if($task->description): ?>
 
                     <div style="font-size:.8rem;color:#6b7280;margin-top:4px;">
-                        {{ $task->description }}
+                        <?php echo e($task->description); ?>
+
                     </div>
 
-                @endif
+                <?php endif; ?>
 
             </div>
 
-            @endif
+            <?php endif; ?>
 
         </div>
 
     </div>
 
-    {{-- SUBMITTED --}}
-    @if($isSubmitted)
+    
+    <?php if($isSubmitted): ?>
 
         <div class="state-card submitted">
 
@@ -164,21 +170,22 @@
                 You already submitted this task.
             </div>
 
-            @if($submission->submitted_at)
+            <?php if($submission->submitted_at): ?>
 
                 <div style="margin-top:10px;font-size:.8rem;color:#0369a1;">
 
                     Submitted:
-                    {{ $submission->submitted_at->format('M d, Y h:i A') }}
+                    <?php echo e($submission->submitted_at->format('M d, Y h:i A')); ?>
+
 
                 </div>
 
-            @endif
+            <?php endif; ?>
 
         </div>
 
-    {{-- GRADED --}}
-    @elseif($isGraded)
+    
+    <?php elseif($isGraded): ?>
 
         <div class="state-card graded">
 
@@ -186,10 +193,12 @@
 
             <div style="font-size:2.5rem;font-weight:700;">
 
-                {{ $submission->score ?? 0 }}
+                <?php echo e($submission->score ?? 0); ?>
+
 
                 <span style="font-size:1rem;">
-                    / {{ $project->max_score }}
+                    / <?php echo e($project->max_score); ?>
+
                 </span>
 
             </div>
@@ -198,23 +207,24 @@
                 Task Graded
             </div>
 
-            @if($submission->feedback)
+            <?php if($submission->feedback): ?>
 
                 <div class="feedback-box">
 
                     <strong>Teacher Feedback:</strong>
                     <br>
 
-                    {{ $submission->feedback }}
+                    <?php echo e($submission->feedback); ?>
+
 
                 </div>
 
-            @endif
+            <?php endif; ?>
 
         </div>
 
-    {{-- FORM --}}
-    @else
+    
+    <?php else: ?>
 
         <div class="card">
 
@@ -225,16 +235,16 @@
             <div class="card-body">
 
                 <form method="POST"
-                      action="{{ route('student.projects.finalize', $project->id) }}"
+                      action="<?php echo e(route('student.projects.finalize', $project->id)); ?>"
                       enctype="multipart/form-data">
 
-                    @csrf
+                    <?php echo csrf_field(); ?>
 
-                    @if($task)
+                    <?php if($task): ?>
                         <input type="hidden"
                                name="task_id"
-                               value="{{ $task->id }}">
-                    @endif
+                               value="<?php echo e($task->id); ?>">
+                    <?php endif; ?>
 
                     <div class="form-group">
 
@@ -306,11 +316,13 @@
 
         </div>
 
-    @endif
+    <?php endif; ?>
 
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
-<script src="{{ asset('assets/js/pages/student-submit.js') }}"></script>
-@endsection
+<?php $__env->startSection('scripts'); ?>
+<script src="<?php echo e(asset('assets/js/pages/student-submit.js')); ?>"></script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\wamp64\www\AyawGub-a-main\resources\views/student/projects/submit.blade.php ENDPATH**/ ?>

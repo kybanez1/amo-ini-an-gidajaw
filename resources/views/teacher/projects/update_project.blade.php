@@ -401,4 +401,6 @@
 
 @endsection
 
+@section('scripts')
 <script src="{{ asset('assets/js/pages/teacher-project-update.js') }}"></script>
+@endsection

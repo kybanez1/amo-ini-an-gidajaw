@@ -258,6 +258,11 @@ Route::prefix('teacher')
                 'projects/{project}/grades/bulk-update',
                 [GradeController::class, 'bulkUpdate']
             )->name('grades.bulkUpdate');
+
+            Route::post(
+                'projects/{project}/grades/project-grade',
+                [GradeController::class, 'storeProjectGrade']
+            )->name('grades.storeProject');
         });
     });
 

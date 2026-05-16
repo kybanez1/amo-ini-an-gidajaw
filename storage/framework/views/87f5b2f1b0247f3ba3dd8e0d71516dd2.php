@@ -1,10 +1,8 @@
-@extends('layouts.app')
+<?php $__env->startPush('styles'); ?>
+<link rel="stylesheet" href="<?php echo e(asset('assets/css/pages/teacher-project-create.css')); ?>">
+<?php $__env->stopPush(); ?>
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/pages/teacher-project-create.css') }}">
-@endpush
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="wrap">
 
     <div class="card">
@@ -15,37 +13,37 @@
 
         <div class="body">
 
-            {{-- ERRORS --}}
-            @if ($errors->any())
+            
+            <?php if($errors->any()): ?>
                 <div class="error-box">
                     <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                 </div>
-            @endif
+            <?php endif; ?>
 
             <form
                 method="POST"
-                action="{{ route('teacher.projects.store') }}"
+                action="<?php echo e(route('teacher.projects.store')); ?>"
                 enctype="multipart/form-data"
             >
-                @csrf
+                <?php echo csrf_field(); ?>
 
-                {{-- TITLE --}}
+                
                 <div class="field">
                     <label>Project Title</label>
 
                     <input
                         type="text"
                         name="title"
-                        value="{{ old('title') }}"
+                        value="<?php echo e(old('title')); ?>"
                         required
                     >
                 </div>
 
-                {{-- DESCRIPTION --}}
+                
                 <div class="field">
                     <label>Description</label>
 
@@ -53,15 +51,15 @@
                         name="description"
                         rows="5"
                         required
-                    >{{ old('description') }}</textarea>
+                    ><?php echo e(old('description')); ?></textarea>
                 </div>
 
-                {{-- INSTRUCTION FILE / LINK --}}
+                
                 <div class="field">
 
                     <label>Instruction File <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
 
-                    {{-- TAB SWITCHER --}}
+                    
                     <div style="display:flex;gap:0;margin-bottom:.75rem;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;width:fit-content;">
                         <button type="button" id="tab-file-create"
                                 onclick="switchTab('create','file')"
@@ -75,7 +73,7 @@
                         </button>
                     </div>
 
-                    {{-- FILE UPLOAD --}}
+                    
                     <div id="panel-file-create">
                         <div class="file-box">
                             <input type="file" name="instruction_file">
@@ -85,12 +83,12 @@
                         </div>
                     </div>
 
-                    {{-- LINK INPUT --}}
+                    
                     <div id="panel-link-create" style="display:none;">
                         <input type="url"
                                name="instruction_link"
                                placeholder="https://drive.google.com/... or any URL"
-                               value="{{ old('instruction_link') }}"
+                               value="<?php echo e(old('instruction_link')); ?>"
                                style="width:100%;padding:.75rem 1rem;border:1.5px solid #e5e7eb;border-radius:10px;font-size:.9rem;box-sizing:border-box;">
                         <div class="file-help" style="margin-top:6px;">
                             Paste a Google Drive, Dropbox, OneDrive link, or any URL.
@@ -99,7 +97,7 @@
 
                 </div>
 
-                {{-- MAX SCORE --}}
+                
                 <div class="field">
                     <label>Max Score</label>
 
@@ -108,12 +106,12 @@
                         name="max_score"
                         min="1"
                         max="1000"
-                        value="{{ old('max_score') }}"
+                        value="<?php echo e(old('max_score')); ?>"
                         required
                     >
                 </div>
 
-                {{-- GROUP --}}
+                
                 <div class="field">
 
                     <label>Assign to Group</label>
@@ -127,20 +125,22 @@
                             -- Select Group --
                         </option>
 
-                        @foreach(auth()->user()->groups()->get() as $group)
+                        <?php $__currentLoopData = auth()->user()->groups()->get(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 
                             <option
-                                value="{{ $group->id }}"
-                                {{ old('group_id') == $group->id ? 'selected' : '' }}
+                                value="<?php echo e($group->id); ?>"
+                                <?php echo e(old('group_id') == $group->id ? 'selected' : ''); ?>
+
                             >
-                                {{ $group->name }}
+                                <?php echo e($group->name); ?>
+
                             </option>
 
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
 
-                {{-- START DATE --}}
+                
                 <div class="field">
 
                     <label>Start Date</label>
@@ -148,12 +148,12 @@
                     <input
                         type="datetime-local"
                         name="start_date"
-                        value="{{ old('start_date') }}"
+                        value="<?php echo e(old('start_date')); ?>"
                         required
                     >
                 </div>
 
-                {{-- DUE DATE --}}
+                
                 <div class="field">
 
                     <label>Due Date</label>
@@ -161,12 +161,12 @@
                     <input
                         type="datetime-local"
                         name="due_date"
-                        value="{{ old('due_date') }}"
+                        value="<?php echo e(old('due_date')); ?>"
                         required
                     >
                 </div>
 
-                {{-- STATUS --}}
+                
                 <div class="field">
 
                     <label>Status</label>
@@ -177,28 +177,32 @@
                     >
                         <option
                             value="draft"
-                            {{ old('status', 'draft') == 'draft' ? 'selected' : '' }}
+                            <?php echo e(old('status', 'draft') == 'draft' ? 'selected' : ''); ?>
+
                         >
                             Draft
                         </option>
 
                         <option
                             value="published"
-                            {{ old('status') == 'published' ? 'selected' : '' }}
+                            <?php echo e(old('status') == 'published' ? 'selected' : ''); ?>
+
                         >
                             Published
                         </option>
 
                         <option
                             value="ongoing"
-                            {{ old('status') == 'ongoing' ? 'selected' : '' }}
+                            <?php echo e(old('status') == 'ongoing' ? 'selected' : ''); ?>
+
                         >
                             Ongoing
                         </option>
 
                         <option
                             value="completed"
-                            {{ old('status') == 'completed' ? 'selected' : '' }}
+                            <?php echo e(old('status') == 'completed' ? 'selected' : ''); ?>
+
                         >
                             Completed
                         </option>
@@ -206,7 +210,7 @@
                     </select>
                 </div>
 
-                {{-- TASKS SECTION --}}
+                
                 <hr style="margin:2rem 0;border:none;border-top:1px solid #e5e7eb;">
 
                 <div class="field">
@@ -217,7 +221,7 @@
 
                     <div id="task-wrapper">
 
-                        {{-- FIRST TASK --}}
+                        
                         <div class="task-card">
 
                             <div class="field">
@@ -254,7 +258,7 @@
                                        min="1"
                                        max="10000"
                                        placeholder="100"
-                                       value="{{ old('tasks.0.max_points', 100) }}"
+                                       value="<?php echo e(old('tasks.0.max_points', 100)); ?>"
                                        style="width:100%;">
                             </div>
 
@@ -262,7 +266,7 @@
 
                     </div>
 
-                    {{-- ADD TASK BUTTON --}}
+                    
                     <button
                         type="button"
                         class="btn btn-add"
@@ -273,7 +277,7 @@
 
                 </div>
 
-                {{-- BUTTON --}}
+                
                 <button
                     type="submit"
                     class="btn btn-primary"
@@ -287,8 +291,10 @@
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
-<script src="{{ asset('assets/js/pages/teacher-project-create.js') }}"></script>
-@endsection
+<?php $__env->startSection('scripts'); ?>
+<script src="<?php echo e(asset('assets/js/pages/teacher-project-create.js')); ?>"></script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\wamp64\www\AyawGub-a-main\resources\views/teacher/projects/create.blade.php ENDPATH**/ ?>
