@@ -1,0 +1,157 @@
+/* student/group/join.blade.php */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
+
+.join-wrap {
+    font-family: 'Sora', sans-serif;
+    max-width: 480px;
+    margin: 4rem auto;
+    padding: 1.5rem;
+}
+
+.join-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,.06);
+}
+
+.join-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.join-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.join-sub {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.code-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-family: 'Sora', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-align: center;
+    text-transform: uppercase;
+    color: #111827;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+}
+
+.code-input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.code-input::placeholder {
+    color: #d1d5db;
+    letter-spacing: 0.15em;
+    font-weight: 400;
+    font-size: 1rem;
+}
+
+.error-msg {
+    color: #dc2626;
+    font-size: 0.8rem;
+    margin-top: 6px;
+}
+
+.btn-join {
+    width: 100%;
+    padding: 1rem;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: background 0.15s;
+}
+
+.btn-join:hover { background: #4338ca; }
+
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 1.25rem;
+    color: #6b7280;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.back-link:hover { color: #374151; }
+
+.how-it-works {
+    margin-top: 2rem;
+    padding: 1.25rem;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.how-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.75rem;
+}
+
+.how-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.83rem;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.how-num {
+    width: 20px;
+    height: 20px;
+    background: #4f46e5;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+}

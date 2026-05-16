@@ -1,0 +1,112 @@
+/* teacher/projects/index.blade.php */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
+
+    .pms-page {
+        font-family: 'Sora', sans-serif;
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.75rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .page-title { font-size: 1.4rem; font-weight: 700; color: #111827; }
+    .page-subtitle { font-size: 0.85rem; color: #6b7280; margin-top: 2px; }
+
+    .btn-primary {
+        padding: 0.625rem 1.25rem;
+        background: #4f46e5;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+
+    .btn-outline {
+        padding: 0.5rem 1rem;
+        background: white;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        text-decoration: none;
+        color: #374151;
+    }
+
+    .btn-outline:hover { background: #f9fafb; }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .project-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 1.5rem;
+        transition: 0.2s;
+    }
+
+    .project-card:hover {
+        border-color: #c7d2fe;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+
+    .project-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .project-icon {
+        width: 42px;
+        height: 42px;
+        background: #eef2ff;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .status-badge {
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 100px;
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .project-title { font-size: 1rem; font-weight: 700; color: #111827; margin-bottom: 4px; }
+    .project-desc { font-size: 0.8rem; color: #6b7280; margin-bottom: 1rem; }
+
+    .project-stats {
+        display: flex;
+        gap: 1rem;
+        background: #f9fafb;
+        padding: 0.75rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+
+    .stat { flex: 1; text-align: center; }
+    .stat .value { font-weight: 700; color: #111827; }
+    .stat .label { font-size: 0.7rem; color: #9ca3af; }
+
+    .project-actions { display: flex; gap: 0.5rem; }

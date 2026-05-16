@@ -1,0 +1,141 @@
+/* teacher/projects/create.blade.php */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
+
+.wrap {
+    font-family: 'Sora', sans-serif;
+    max-width: 900px;
+    margin: auto;
+    padding: 2rem;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+.header {
+    padding: 1.4rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.body {
+    padding: 1.5rem;
+}
+
+.field {
+    margin-bottom: 1.25rem;
+}
+
+label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 7px;
+    color: #374151;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 0.85rem;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    transition: 0.2s ease;
+    box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+}
+
+textarea {
+    resize: vertical;
+}
+
+.file-box {
+    border: 2px dashed #d1d5db;
+    padding: 1rem;
+    border-radius: 12px;
+    background: #f9fafb;
+}
+
+.file-help {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.btn {
+    padding: 0.85rem 1.4rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: 0.2s ease;
+}
+
+.btn-primary {
+    background: #4f46e5;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #4338ca;
+}
+
+.btn-add {
+    background: #eef2ff;
+    color: #4338ca;
+    margin-top: .5rem;
+}
+
+.btn-add:hover {
+    background: #dbeafe;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #fee2e2;
+    color: #991b1b;
+    border: none;
+    border-radius: 8px;
+    padding: .35rem .6rem;
+    cursor: pointer;
+}
+
+.error-box {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.error-box ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.task-card {
+    border: 1px solid #e5e7eb;
+    padding: 1rem;
+    border-radius: 14px;
+    margin-bottom: 1rem;
+    background: #f9fafb;
+    position: relative;
+}

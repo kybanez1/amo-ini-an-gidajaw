@@ -1,0 +1,34 @@
+/* teacher/grade/edit.blade.php */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
+
+.grade-wrap { font-family: 'Sora', sans-serif; max-width: 860px; margin: 0 auto; padding: 1.5rem; }
+.page-back { display: inline-flex; align-items: center; gap: 6px; color: #6b7280; text-decoration: none; font-size: 0.85rem; margin-bottom: 1.25rem; }
+.page-back:hover { color: #374151; }
+.card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; margin-bottom: 1.25rem; overflow: hidden; }
+.card-header { padding: 1.1rem 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 0.75rem; }
+.card-title { font-weight: 700; font-size: 1rem; color: #111827; }
+.card-body { padding: 1.5rem; }
+.student-banner { display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem; background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-bottom: 1px solid #bae6fd; }
+.student-avatar { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #6366f1); display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 1.2rem; }
+.student-name { font-size: 1.1rem; font-weight: 700; color: #111827; }
+.student-email { font-size: 0.8rem; color: #6b7280; }
+.project-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
+.info-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 0.875rem 1rem; }
+.info-label { font-size: 0.72rem; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+.info-value { font-size: 0.9rem; font-weight: 600; color: #111827; }
+.submission-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 1.1rem; font-size: 0.875rem; color: #374151; line-height: 1.6; white-space: pre-wrap; min-height: 80px; }
+.form-group { margin-bottom: 1.25rem; }
+.form-label { font-size: 0.8rem; font-weight: 600; color: #374151; display: block; margin-bottom: 6px; }
+.score-input-row { display: flex; align-items: center; gap: 0.75rem; }
+.score-input { width: 120px; padding: 0.65rem 1rem; border: 1.5px solid #d1d5db; border-radius: 10px; font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; text-align: center; color: #111827; transition: border-color 0.15s; }
+.score-input:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+.score-max { font-size: 1rem; color: #6b7280; font-weight: 600; }
+.feedback-textarea { width: 100%; min-height: 120px; padding: 12px 14px; border: 1.5px solid #d1d5db; border-radius: 10px; font-family: 'Sora', sans-serif; font-size: 0.875rem; resize: vertical; box-sizing: border-box; transition: border-color 0.15s; }
+.feedback-textarea:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+.score-preview { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 0.875rem 1.25rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.score-preview-label { font-size: 0.82rem; color: #374151; }
+.score-preview-val { font-size: 1.5rem; font-weight: 700; color: #16a34a; }
+.btn-submit { width: 100%; padding: 0.85rem; border: none; border-radius: 12px; background: #4f46e5; color: white; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background 0.15s; }
+.btn-submit:hover { background: #4338ca; }
+.error-msg { color: #dc2626; font-size: 0.75rem; margin-top: 4px; }

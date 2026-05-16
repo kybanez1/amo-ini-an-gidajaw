@@ -1,0 +1,472 @@
+/* student/dashboard.blade.php */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --border:#e5e7eb;
+    --text:#0f172a;
+    --muted:#64748b;
+    --primary:#6366f1;
+    --primary-dark:#4f46e5;
+    --success:#10b981;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+    --shadow:0 10px 30px rgba(15,23,42,.06);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+}
+
+body{
+    background:var(--bg);
+}
+
+.student-dashboard{
+    padding:2rem;
+    max-width:1400px;
+    margin:auto;
+}
+
+/* ===================================================== */
+/* HERO */
+/* ===================================================== */
+
+.hero{
+    position:relative;
+    overflow:hidden;
+    border-radius:28px;
+    padding:2.2rem;
+    margin-bottom:2rem;
+    background:
+        radial-gradient(circle at top right, rgba(255,255,255,.18), transparent 25%),
+        linear-gradient(135deg,#4f46e5 0%,#7c3aed 50%,#2563eb 100%);
+    color:#fff;
+    box-shadow:0 20px 40px rgba(79,70,229,.22);
+}
+
+.hero::after{
+    content:'';
+    position:absolute;
+    right:-40px;
+    top:-40px;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    background:rgba(255,255,255,.08);
+}
+
+.hero-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:1rem;
+    position:relative;
+    z-index:2;
+}
+
+.hero-title{
+    font-size:2.2rem;
+    font-weight:800;
+    margin-bottom:.4rem;
+}
+
+.hero-sub{
+    color:rgba(255,255,255,.85);
+    font-size:14px;
+}
+
+.student-badge{
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.15);
+    padding:.85rem 1.2rem;
+    border-radius:16px;
+    font-weight:700;
+    font-size:13px;
+}
+
+/* ===================================================== */
+/* STATS */
+/* ===================================================== */
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1.2rem;
+    margin-top:2rem;
+}
+
+.stat-card{
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(12px);
+    border-radius:22px;
+    padding:1.2rem;
+    transition:.25s ease;
+}
+
+.stat-card:hover{
+    transform:translateY(-4px);
+}
+
+.stat-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:1rem;
+}
+
+.stat-icon{
+    width:50px;
+    height:50px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    background:rgba(255,255,255,.15);
+}
+
+.stat-value{
+    font-size:2rem;
+    font-weight:800;
+}
+
+.stat-label{
+    font-size:13px;
+    color:rgba(255,255,255,.8);
+}
+
+/* ===================================================== */
+/* MAIN GRID */
+/* ===================================================== */
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:1fr 350px;
+    gap:1.5rem;
+}
+
+@media(max-width:1100px){
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+
+    .stats-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+
+@media(max-width:700px){
+
+    .student-dashboard{
+        padding:1rem;
+    }
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .hero-title{
+        font-size:1.7rem;
+    }
+
+    .hero-top{
+        flex-direction:column;
+    }
+
+}
+
+/* ===================================================== */
+/* PANEL */
+/* ===================================================== */
+
+.panel{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:24px;
+    overflow:hidden;
+    margin-bottom:1.5rem;
+    box-shadow:var(--shadow);
+}
+
+.panel-header{
+    padding:1.4rem 1.5rem;
+    border-bottom:1px solid #f1f5f9;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.panel-title{
+    font-size:18px;
+    font-weight:800;
+    color:var(--text);
+}
+
+.panel-sub{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:4px;
+}
+
+/* ===================================================== */
+/* PROJECT TABLE */
+/* ===================================================== */
+
+.project-table-wrap{
+    overflow:auto;
+}
+
+.project-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.project-table th{
+    background:#f8fafc;
+    color:#94a3b8;
+    text-transform:uppercase;
+    font-size:11px;
+    letter-spacing:.05em;
+    padding:1rem 1.4rem;
+    text-align:left;
+}
+
+.project-table td{
+    padding:1.2rem 1.4rem;
+    border-top:1px solid #f1f5f9;
+    vertical-align:middle;
+}
+
+.project-row{
+    transition:.2s ease;
+}
+
+.project-row:hover{
+    background:#fafbff;
+}
+
+.project-name{
+    font-size:15px;
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:4px;
+}
+
+.project-teacher{
+    font-size:12px;
+    color:var(--muted);
+}
+
+/* ===================================================== */
+/* STATUS */
+/* ===================================================== */
+
+.status{
+    padding:.5rem .9rem;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
+
+.status.graded{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status.submitted{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.status.pending{
+    background:#f3f4f6;
+    color:#6b7280;
+}
+
+/* ===================================================== */
+/* SCORE */
+/* ===================================================== */
+
+.score-pill{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    padding:.55rem .8rem;
+    border-radius:12px;
+    font-weight:700;
+    font-size:13px;
+    display:inline-block;
+}
+
+/* ===================================================== */
+/* BUTTONS */
+/* ===================================================== */
+
+.actions{
+    display:flex;
+    gap:.6rem;
+    flex-wrap:wrap;
+}
+
+.btn{
+    text-decoration:none;
+    border:none;
+    padding:.7rem 1rem;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:700;
+    transition:.2s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+.btn-dark{
+    background:#111827;
+    color:#fff;
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,#6366f1,#4f46e5);
+    color:#fff;
+}
+
+/* ===================================================== */
+/* GROUPS */
+/* ===================================================== */
+
+.group-list{
+    padding:1rem;
+}
+
+.group-item{
+    background:#f8fafc;
+    border:1px solid #eef2f7;
+    border-radius:18px;
+    padding:1rem;
+    margin-bottom:1rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:1rem;
+    transition:.2s ease;
+}
+
+.group-item:hover{
+    transform:translateY(-2px);
+    background:#fff;
+}
+
+.group-item:last-child{
+    margin-bottom:0;
+}
+
+.group-name{
+    font-size:16px;
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:4px;
+}
+
+.group-teacher{
+    font-size:13px;
+    color:var(--muted);
+}
+
+/* ===================================================== */
+/* SIDE CARDS */
+/* ===================================================== */
+
+.summary-wrap{
+    padding:1rem;
+}
+
+.summary-box{
+    border-radius:20px;
+    padding:1.2rem;
+    margin-bottom:1rem;
+    background:linear-gradient(135deg,#ffffff,#f8fafc);
+    border:1px solid #edf2f7;
+}
+
+.summary-box:last-child{
+    margin-bottom:0;
+}
+
+.summary-label{
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:8px;
+}
+
+.summary-value{
+    font-size:2rem;
+    font-weight:800;
+    color:var(--text);
+}
+
+/* ===================================================== */
+/* RECENT */
+/* ===================================================== */
+
+.recent-wrap{
+    padding:.5rem 0;
+}
+
+.recent-item{
+    padding:1rem 1.4rem;
+    border-bottom:1px solid #f1f5f9;
+}
+
+.recent-item:last-child{
+    border-bottom:none;
+}
+
+.recent-title{
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:5px;
+}
+
+.recent-meta{
+    font-size:12px;
+    color:var(--muted);
+}
+
+.recent-grade{
+    margin-top:8px;
+    display:inline-block;
+    background:#dcfce7;
+    color:#166534;
+    font-size:12px;
+    font-weight:700;
+    padding:.45rem .7rem;
+    border-radius:999px;
+}
+
+/* ===================================================== */
+/* EMPTY */
+/* ===================================================== */
+
+.empty{
+    padding:3rem 2rem;
+    text-align:center;
+    color:#94a3b8;
+    font-weight:600;
+}

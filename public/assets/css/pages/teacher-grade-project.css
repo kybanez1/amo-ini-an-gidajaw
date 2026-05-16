@@ -1,0 +1,173 @@
+/* teacher/grade/project.blade.php */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
+
+.wrap{
+    max-width:1200px;
+    margin:auto;
+    padding:2rem;
+    font-family:'Sora',sans-serif;
+}
+
+.card{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    overflow:hidden;
+    margin-bottom:1.5rem;
+}
+
+.card-header{
+    padding:1.25rem 1.5rem;
+    border-bottom:1px solid #e5e7eb;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.card-title{
+    font-size:1rem;
+    font-weight:700;
+}
+
+.card-body{
+    padding:1.5rem;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1rem;
+    margin-bottom:1.5rem;
+}
+
+.stat{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:1.25rem;
+}
+
+.stat-label{
+    color:#9ca3af;
+    font-size:.75rem;
+}
+
+.stat-value{
+    margin-top:8px;
+    font-size:1.5rem;
+    font-weight:700;
+    color:#111827;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#f9fafb;
+    color:#9ca3af;
+    text-transform:uppercase;
+    font-size:.75rem;
+    text-align:left;
+    padding:1rem;
+}
+
+td{
+    padding:1rem;
+    border-top:1px solid #f3f4f6;
+    font-size:.875rem;
+}
+
+.student{
+    font-weight:600;
+    color:#111827;
+}
+
+.badge{
+    display:inline-block;
+    padding:.3rem .75rem;
+    border-radius:999px;
+    font-size:.72rem;
+    font-weight:600;
+}
+
+.submitted{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.reviewed{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.draft{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.btn{
+    display:inline-block;
+    padding:.55rem 1rem;
+    border-radius:10px;
+    text-decoration:none;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+.btn-primary{
+    background:#4f46e5;
+    color:white;
+}
+
+.btn-outline{
+    border:1px solid #d1d5db;
+    color:#374151;
+    background:white;
+}
+
+.btn-primary:hover{
+    background:#4338ca;
+}
+
+.btn-outline:hover{
+    background:#f9fafb;
+}
+
+.empty{
+    text-align:center;
+    padding:3rem;
+    color:#9ca3af;
+}
+
+.file-link{
+    color:#4f46e5;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.file-link:hover{
+    text-decoration:underline;
+}
+
+.top-actions{
+    display:flex;
+    gap:10px;
+    margin-bottom:1.5rem;
+}
+
+@media(max-width:768px){
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .card-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+}
