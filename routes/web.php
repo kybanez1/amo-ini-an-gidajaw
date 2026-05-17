@@ -13,6 +13,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\StudentProjectController;
 use App\Http\Controllers\StudentGroupController;
 use App\Http\Controllers\GradeController;
+use App\Http\Controllers\SectionController;
 use App\Http\Controllers\ProjectSubmissionController;
 use App\Http\Controllers\TeacherStudentController;
 use App\Http\Controllers\StudentTeacherController;
@@ -274,6 +275,20 @@ Route::prefix('teacher')
                 'projects/{project}/grade/student/{student}',
                 [GradeController::class, 'storeIndividual']
             )->name('grades.individual.store');
+
+            /*
+            |------------------------------------------------------------------
+            | SECTIONS
+            |------------------------------------------------------------------
+            */
+            Route::get('sections', [SectionController::class, 'index'])->name('sections.index');
+            Route::post('sections', [SectionController::class, 'store'])->name('sections.store');
+            Route::get('sections/{section}', [SectionController::class, 'show'])->name('sections.show');
+            Route::put('sections/{section}', [SectionController::class, 'update'])->name('sections.update');
+            Route::delete('sections/{section}', [SectionController::class, 'destroy'])->name('sections.destroy');
+            Route::post('sections/{section}/add-student', [SectionController::class, 'addStudent'])->name('sections.addStudent');
+            Route::delete('sections/{section}/remove-student/{student}', [SectionController::class, 'removeStudent'])->name('sections.removeStudent');
+            Route::post('sections/{section}/regenerate-code', [SectionController::class, 'regenerateCode'])->name('sections.regenerateCode');
         });
     });
 
@@ -348,6 +363,10 @@ Route::prefix('student')
                 '/grades',
                 [StudentDashboardController::class, 'grades']
             )->name('grades');
+
+            // Section join
+            Route::get('sections/join', [SectionController::class, 'joinForm'])->name('sections.join');
+            Route::post('sections/join', [SectionController::class, 'join'])->name('sections.join.store');
 
             /*
             |--------------------------------------------------------------------------

@@ -41,7 +41,13 @@
                 <div class="group-name">{{ $group->name }}</div>
 
                 <div class="group-desc">
-                    {{ $group->description ?: 'No description available.' }}
+                    @if($group->section)
+                        🏷️ {{ $group->section->name }}
+                        @if($group->section->school_year) · {{ $group->section->school_year }}@endif
+                        @if($group->section->semester) · {{ $group->section->semester }}@endif
+                    @else
+                        <span style="color:#9ca3af;">No section assigned</span>
+                    @endif
                 </div>
 
                 <div class="group-stats">
@@ -90,8 +96,6 @@
 
 {{-- ═══════════════════════════════════════════
      CREATE GROUP MODAL
-     Placed OUTSIDE .pms-page, directly before @endsection
-     so Sneat's layout-overlay cannot intercept clicks
 ═══════════════════════════════════════════ --}}
 <div id="createGroupModal">
     <div class="modal-box" id="createGroupModalBox">
@@ -117,6 +121,7 @@
             <form method="POST" action="{{ route('teacher.groups.store') }}" id="createGroupForm">
                 @csrf
 
+                {{-- Group Name --}}
                 <div class="form-group">
                     <label>Group Name <span style="color:#ef4444;">*</span></label>
                     <input type="text"
@@ -127,13 +132,39 @@
                            required>
                 </div>
 
+                {{-- Class Section --}}
                 <div class="form-group">
-                    <label>Description <span style="color:#9ca3af;font-weight:400;">(optional)</span></label>
-                    <textarea name="description"
-                              rows="2"
-                              placeholder="Brief description of this group...">{{ old('description') }}</textarea>
+                    <label>Class Section <span style="color:#9ca3af;font-weight:400;font-size:.8rem;">(optional)</span></label>
+                    @if($sections->isEmpty())
+                        <div style="padding:.75rem 1rem;background:#fffbeb;border:1.5px dashed #fbbf24;border-radius:8px;font-size:.82rem;color:#92400e;">
+                            ⚠️ No sections found.
+                            <a href="{{ route('teacher.sections.index') }}" style="color:#6366f1;font-weight:600;">Go create a section →</a>
+                            <span style="color:#9ca3af;display:block;margin-top:.3rem;font-size:.75rem;">You can still create the group and assign a section later.</span>
+                        </div>
+                        <input type="hidden" name="section_id" value="">
+                    @else
+                        <div style="position:relative;">
+                            <select name="section_id" id="sectionPicker"
+                                style="width:100%;padding:.55rem 2.2rem .55rem .85rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:.88rem;background:#fff;color:#374151;appearance:none;cursor:pointer;transition:border-color .2s;">
+                                <option value="">— Select a class section —</option>
+                                @foreach($sections as $sec)
+                                    <option value="{{ $sec->id }}"
+                                        {{ old('section_id') == $sec->id ? 'selected' : '' }}
+                                        data-name="{{ $sec->name }}"
+                                        data-students='{{ json_encode($sec->students->pluck("id")) }}'>
+                                        {{ $sec->name }}
+                                        @if($sec->school_year) · {{ $sec->school_year }}@endif
+                                        @if($sec->semester) · {{ $sec->semester }}@endif
+                                    </option>
+                                @endforeach
+                            </select>
+                            <span style="position:absolute;right:.8rem;top:50%;transform:translateY(-50%);color:#9ca3af;pointer-events:none;">▾</span>
+                        </div>
+                    @endif
+                    @error('section_id')<div style="color:#ef4444;font-size:.75rem;margin-top:.3rem;">{{ $message }}</div>@enderror
                 </div>
 
+                {{-- Add Students --}}
                 <div class="form-group">
                     <label>Add Students <span style="color:#9ca3af;font-weight:400;">(optional — you can add later)</span></label>
 
@@ -146,33 +177,52 @@
                             No students registered yet.
                         </div>
                     @else
+                        {{-- Filter tabs --}}
+                        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem;">
+                            <button type="button" class="sg-filter-btn sg-active" data-filter="all">
+                                All <span class="sg-count" id="sgCountAll">{{ $allStudents->count() }}</span>
+                            </button>
+                            <button type="button" class="sg-filter-btn" data-filter="section" id="sgFilterSection" style="display:none;">
+                                In Section <span class="sg-count" id="sgCountSection">0</span>
+                            </button>
+                            <button type="button" class="sg-filter-btn" data-filter="selected">
+                                Selected <span class="sg-count" id="sgCountSelected">0</span>
+                            </button>
+                        </div>
+
                         <input type="text"
                                id="studentSearchInput"
                                placeholder="🔍 Search by name or ID..."
-                               style="margin-bottom:8px;"
-                               oninput="filterStudents(this.value)">
+                               style="margin-bottom:8px;width:100%;padding:.5rem .85rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:.85rem;box-sizing:border-box;"
+                               oninput="sgApplyFilter()">
 
                         <div class="student-checklist" id="studentList">
                             @foreach($allStudents as $s)
                             <label class="student-check-item"
                                    data-name="{{ strtolower($s->name) }}"
-                                   data-sid="{{ strtolower($s->student_id ?? '') }}">
+                                   data-sid="{{ strtolower($s->student_id ?? '') }}"
+                                   data-uid="{{ $s->id }}">
                                 <input type="checkbox"
                                        name="students[]"
                                        value="{{ $s->id }}"
+                                       class="sg-checkbox"
                                        style="accent-color:#4f46e5;flex-shrink:0;"
                                        {{ in_array($s->id, old('students', [])) ? 'checked' : '' }}>
                                 <div>
-                                    <div style="font-weight:600;font-size:.85rem;">{{ $s->name }}</div>
+                                    <div style="font-weight:600;font-size:.85rem;display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;">
+                                        {{ $s->name }}
+                                        <span class="sg-in-section-tag" style="display:none;padding:.1rem .4rem;background:#dcfce7;color:#16a34a;border-radius:999px;font-size:.65rem;font-weight:700;">✔ In section</span>
+                                    </div>
                                     <div style="font-size:.72rem;color:#9ca3af;">
                                         ID: {{ $s->student_id ?? '—' }} &nbsp;·&nbsp; {{ $s->department ?? 'No course' }}
                                     </div>
                                 </div>
                             </label>
                             @endforeach
+                            <div id="sgNoMatch" style="display:none;padding:1rem;text-align:center;color:#9ca3af;font-size:.82rem;">No students match.</div>
                         </div>
 
-                        <div style="font-size:.72rem;color:#9ca3af;margin-top:5px;">
+                        <div id="sgHint" style="font-size:.72rem;color:#9ca3af;margin-top:5px;">
                             {{ $allStudents->count() }} student(s) available
                         </div>
                     @endif
@@ -188,6 +238,103 @@
 
     </div>
 </div>
+
+<style>
+.sg-filter-btn {
+    padding:.28rem .75rem;border-radius:999px;border:1.5px solid #e5e7eb;
+    background:#f9fafb;color:#6b7280;font-size:.74rem;font-weight:600;cursor:pointer;transition:all .15s;
+}
+.sg-filter-btn:hover,.sg-filter-btn.sg-active{background:#eef2ff;border-color:#6366f1;color:#4f46e5;}
+.sg-filter-btn.sg-active{box-shadow:0 0 0 3px rgba(99,102,241,.12);}
+.sg-count{background:#6366f1;color:#fff;border-radius:999px;padding:0 .38rem;font-size:.66rem;margin-left:.2rem;}
+</style>
+
+<script>
+(function(){
+    var sgFilter = 'all';
+    var sgSectionIds = [];
+
+    function sgRows(){ return [].slice.call(document.querySelectorAll('#studentList .student-check-item')); }
+
+    function sgUpdateCounts(){
+        var rows = sgRows();
+        var el = document.getElementById('sgCountAll');
+        if(el) el.textContent = rows.length;
+        el = document.getElementById('sgCountSection');
+        if(el) el.textContent = rows.filter(function(r){ return sgSectionIds.indexOf(+r.dataset.uid) > -1; }).length;
+        el = document.getElementById('sgCountSelected');
+        if(el) el.textContent = rows.filter(function(r){ return r.querySelector('.sg-checkbox').checked; }).length;
+    }
+
+    window.sgApplyFilter = function(){
+        var q = (document.getElementById('studentSearchInput')||{}).value;
+        q = q ? q.toLowerCase().trim() : '';
+        var vis = 0;
+        sgRows().forEach(function(r){
+            var uid = +r.dataset.uid;
+            var checked = r.querySelector('.sg-checkbox').checked;
+            var matchQ = !q || r.dataset.name.indexOf(q)>-1 || r.dataset.sid.indexOf(q)>-1;
+            var show = matchQ;
+            if(sgFilter==='section')  show = show && sgSectionIds.indexOf(uid)>-1;
+            if(sgFilter==='selected') show = show && checked;
+            r.style.display = show ? '' : 'none';
+            if(show) vis++;
+        });
+        var nm = document.getElementById('sgNoMatch');
+        if(nm) nm.style.display = vis===0 ? 'block' : 'none';
+        var hint = document.getElementById('sgHint');
+        if(hint) hint.textContent = vis + ' student(s) ' + (sgFilter==='section' ? 'in this section' : sgFilter==='selected' ? 'selected' : 'shown');
+        sgUpdateCounts();
+    };
+
+    function sgSetFilter(f){
+        sgFilter = f;
+        [].slice.call(document.querySelectorAll('.sg-filter-btn')).forEach(function(b){
+            b.classList.toggle('sg-active', b.dataset.filter===f);
+        });
+        sgApplyFilter();
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+        // Section picker
+        var picker = document.getElementById('sectionPicker');
+        if(picker){
+            picker.addEventListener('change', function(){
+                var opt = picker.options[picker.selectedIndex];
+                var ids = [];
+                try{ ids = JSON.parse(opt.dataset.students||'[]'); }catch(e){}
+                sgSectionIds = ids;
+
+                sgRows().forEach(function(r){
+                    var inSec = ids.indexOf(+r.dataset.uid)>-1;
+                    r.classList.toggle('sg-in-section', inSec);
+                    var tag = r.querySelector('.sg-in-section-tag');
+                    if(tag) tag.style.display = inSec ? 'inline-flex' : 'none';
+                });
+
+                var fsBtn = document.getElementById('sgFilterSection');
+                if(fsBtn) fsBtn.style.display = picker.value ? '' : 'none';
+                sgSetFilter(picker.value ? 'section' : 'all');
+            });
+            if(picker.value) picker.dispatchEvent(new Event('change'));
+        }
+
+        // Filter buttons
+        [].slice.call(document.querySelectorAll('.sg-filter-btn')).forEach(function(b){
+            b.addEventListener('click', function(){ sgSetFilter(b.dataset.filter); });
+        });
+
+        // Checkbox change → update counts
+        var list = document.getElementById('studentList');
+        if(list) list.addEventListener('change', function(){
+            sgUpdateCounts();
+            if(sgFilter==='selected') sgApplyFilter();
+        });
+
+        sgUpdateCounts();
+    });
+})();
+</script>
 
 @endsection
 

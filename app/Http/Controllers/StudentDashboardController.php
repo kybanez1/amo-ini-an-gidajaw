@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\View\View;
+use App\Models\Section;
 
 class StudentDashboardController extends Controller
 {
@@ -47,12 +48,16 @@ class StudentDashboardController extends Controller
             ? round($gradedProjects->avg('pivot.score'), 2)
             : 0;
 
+        // Sections this student has joined
+        $sections = $student->joinedSections()->with('teacher')->latest()->get();
+
         return view('student.dashboard', [
             'assignedProjects' => $assignedProjects,
             'totalProjects'    => $totalProjects,
             'submittedCount'   => $submittedCount,
             'pendingCount'     => $pendingCount,
             'groups'           => $groups,
+            'sections'         => $sections,
             'recentSubmissions' => $recentSubmissions,
             'averageScore'     => $averageScore,
             'student'          => $student,

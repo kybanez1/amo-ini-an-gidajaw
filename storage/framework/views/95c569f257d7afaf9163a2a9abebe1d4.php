@@ -105,6 +105,24 @@
 
         </li>
 
+        <!-- SECTIONS -->
+        <li class="menu-item
+            <?php echo e(request()->routeIs('teacher.sections.*')
+                ? 'active' : ''); ?>">
+
+            <a href="<?php echo e(route('teacher.sections.index')); ?>"
+               class="menu-link">
+
+                <i class="menu-icon tf-icons bx bx-chalkboard"></i>
+
+                <div>
+                    Sections
+                </div>
+
+            </a>
+
+        </li>
+
         <!-- GRADED -->
         <li class="menu-item
             <?php echo e(request()->routeIs('teacher.graded.index')
@@ -188,6 +206,26 @@
             </a>
 
         </li>
+
+        <!-- MY SECTIONS (student) -->
+        <?php if(auth()->user()->isStudent()): ?>
+        <li class="menu-item
+            <?php echo e(request()->routeIs('student.sections.*')
+                ? 'active' : ''); ?>">
+
+            <a href="<?php echo e(route('student.sections.join')); ?>"
+               class="menu-link">
+
+                <i class="menu-icon tf-icons bx bx-chalkboard"></i>
+
+                <div>
+                    My Sections
+                </div>
+
+            </a>
+
+        </li>
+        <?php endif; ?>
 
     <?php endif; ?>
 

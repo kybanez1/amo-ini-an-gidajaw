@@ -171,6 +171,26 @@ class User extends Authenticatable
     /**
      * Check if user is a teacher
      */
+    /*
+    |--------------------------------------------------------------------------
+    | SECTION RELATIONSHIPS
+    |--------------------------------------------------------------------------
+    */
+    public function sections(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Section::class, 'teacher_id');
+    }
+
+    public function joinedSections(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            Section::class,
+            'section_student',
+            'student_id',
+            'section_id'
+        )->withPivot('joined_at')->withTimestamps();
+    }
+
     public function isTeacher(): bool
     {
         return $this->role === 'teacher';

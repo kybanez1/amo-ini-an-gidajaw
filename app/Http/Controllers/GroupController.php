@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\Section;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -15,18 +16,24 @@ class GroupController extends Controller
      */
     public function index(): View
     {
+        // Guard: sections table may not exist yet before migration runs
+        $sections = \Illuminate\Support\Facades\Schema::hasTable('sections')
+            ? auth()->user()->sections()->where('status', 'active')->orderBy('name')->get()
+            : collect();
+
         if (!\Illuminate\Support\Facades\Schema::hasTable('groups')) {
             return view('teacher.group.index_group', [
-                'groups' => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12),
+                'groups'   => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12),
+                'sections' => $sections,
             ]);
         }
 
-        $groups = Group::with(['teacher', 'students', 'projects'])
+        $groups = Group::with(['teacher', 'students', 'projects', 'section'])
             ->where('teacher_id', auth()->id())
             ->latest()
             ->paginate(12);
 
-        return view('teacher.group.index_group', compact('groups'));
+        return view('teacher.group.index_group', compact('groups', 'sections'));
     }
 
     /**
@@ -39,7 +46,13 @@ class GroupController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('teacher.group.create_group', compact('students'));
+        // Teacher's own sections for the section picker
+        // Guard: sections table may not exist yet before migration runs
+        $sections = \Illuminate\Support\Facades\Schema::hasTable('sections')
+            ? auth()->user()->sections()->where('status', 'active')->orderBy('name')->get()
+            : collect();
+
+        return view('teacher.group.create_group', compact('students', 'sections'));
     }
 
     /**
@@ -47,9 +60,14 @@ class GroupController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Only validate section_id against DB if the sections table exists
+        $sectionRule = \Illuminate\Support\Facades\Schema::hasTable('sections')
+            ? 'nullable|exists:sections,id'
+            : 'nullable';
+
         $validated = $request->validate([
             'name'        => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
+            'section_id'  => $sectionRule,
             'students'    => 'nullable|array',
             'students.*'  => 'exists:users,id',
         ], [
@@ -63,6 +81,7 @@ class GroupController extends Controller
                 'name'        => $validated['name'],
                 'description' => $validated['description'] ?? null,
                 'teacher_id'  => auth()->id(),
+                'section_id'  => $validated['section_id'] ?? null,
                 'status'      => 'active',
                 // join_code is auto-generated in Group::booted()
             ]);
@@ -125,7 +144,12 @@ class GroupController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('teacher.group.edit_group', compact('group', 'students'));
+        // Guard: sections table may not exist yet before migration runs
+        $sections = \Illuminate\Support\Facades\Schema::hasTable('sections')
+            ? auth()->user()->sections()->where('status', 'active')->orderBy('name')->get()
+            : collect();
+
+        return view('teacher.group.edit_group', compact('group', 'students', 'sections'));
     }
 
     /**
@@ -137,9 +161,13 @@ class GroupController extends Controller
             abort(403, 'Unauthorized');
         }
 
+        $sectionRule = \Illuminate\Support\Facades\Schema::hasTable('sections')
+            ? 'nullable|exists:sections,id'
+            : 'nullable';
+
         $validated = $request->validate([
             'name'        => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'section_id'  => $sectionRule,
             'status'      => 'nullable|in:active,inactive',
             'students'    => 'nullable|array',
             'students.*'  => 'exists:users,id',
@@ -147,7 +175,7 @@ class GroupController extends Controller
 
         $group->update([
             'name'        => $validated['name'],
-            'description' => $validated['description'] ?? null,
+            'section_id'  => $validated['section_id'] ?? null,
             'status'      => $validated['status'] ?? $group->status,
         ]);
 

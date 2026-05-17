@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\Group;
 use App\Models\User;
 use App\Models\ProjectSubmission;
+use App\Models\Section;
 
 class TeacherDashboardController extends Controller
 {
@@ -84,6 +85,17 @@ class TeacherDashboardController extends Controller
             ->where('status', 'submitted')
             ->count();
 
+        /*
+        |--------------------------------------------------------------------------
+        | SECTIONS — this teacher only, latest 5
+        |--------------------------------------------------------------------------
+        */
+        $sections = Section::withCount('students')
+            ->where('teacher_id', $teacher->id)
+            ->latest()
+            ->take(5)
+            ->get();
+
         return view('teacher.dashboard', [
             'projects'       => $projects,
             'totalProjects'  => $projects->count(),
@@ -94,6 +106,8 @@ class TeacherDashboardController extends Controller
             'recentlyGraded' => $recentlyGraded,
             'gradedCount'    => $gradedCount,
             'pendingGrades'  => $pendingGrades,
+            'sections'       => $sections,
+            'totalSections'  => $sections->count(),
         ]);
     }
 }

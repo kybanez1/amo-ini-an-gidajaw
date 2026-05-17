@@ -19,6 +19,7 @@ class Group extends Model
         'name',
         'description',
         'teacher_id',
+        'section_id',
         'status',
         'join_code',
     ];
@@ -77,6 +78,11 @@ class Group extends Model
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
+    }
+
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(Section::class, 'section_id');
     }
 
     /**

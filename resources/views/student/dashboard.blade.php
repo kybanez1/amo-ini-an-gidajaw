@@ -130,6 +130,26 @@
 
             </div>
 
+            <div class="stat-card">
+
+                <div class="stat-top">
+
+                    <div class="stat-icon">
+                        🏫
+                    </div>
+
+                </div>
+
+                <div class="stat-value">
+                    {{ $sections->count() }}
+                </div>
+
+                <div class="stat-label">
+                    My Sections
+                </div>
+
+            </div>
+
         </div>
 
     </div>
@@ -322,6 +342,13 @@
                               font-weight:700;">
                         🔑 Join a Group
                     </a>
+                    <a href="{{ route('student.sections.join') }}"
+                       style="display:inline-flex;align-items:center;gap:6px;
+                              padding:.65rem 1.1rem;background:#0d9488;color:white;
+                              border-radius:10px;text-decoration:none;font-size:.82rem;
+                              font-weight:700;">
+                        🏫 Join a Section
+                    </a>
                 </div>
 
                 @if($groups->isEmpty())
@@ -368,6 +395,50 @@
 
                 @endif
 
+            </div>
+
+        </div>
+
+            <!-- SECTIONS -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">🏫 My Sections</div>
+                        <div class="panel-sub">Class sections you are enrolled in</div>
+                    </div>
+                    <a href="{{ route('student.sections.join') }}"
+                       style="display:inline-flex;align-items:center;gap:5px;
+                              padding:.5rem 1rem;background:#0d9488;color:white;
+                              border-radius:9px;text-decoration:none;font-size:.8rem;font-weight:700;">
+                        ＋ Join Section
+                    </a>
+                </div>
+
+                @if($sections->isEmpty())
+                    <div class="empty">
+                        Not enrolled in any section yet.<br>
+                        <span style="font-size:.82rem;color:#9ca3af;">Ask your teacher for a section code.</span>
+                    </div>
+                @else
+                    <div class="group-list">
+                        @foreach($sections as $section)
+                            <div class="group-item">
+                                <div>
+                                    <div class="group-name">{{ $section->name }}</div>
+                                    <div class="group-teacher">
+                                        👩‍🏫 {{ $section->teacher->name ?? 'Teacher' }}
+                                        @if($section->school_year) &nbsp;·&nbsp; {{ $section->school_year }} @endif
+                                        @if($section->semester) &nbsp;·&nbsp; {{ $section->semester }} @endif
+                                    </div>
+                                </div>
+                                <span style="padding:.3rem .75rem;background:#ccfbf1;color:#0f766e;
+                                             border-radius:999px;font-size:.75rem;font-weight:700;">
+                                    ✅ Enrolled
+                                </span>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
 
         </div>

@@ -23,6 +23,7 @@
             </span>
             <a href="{{ route('teacher.students.index') }}" class="btn-outline">🧑‍🎓 My Students</a>
             <a href="{{ route('teacher.groups.create') }}" class="btn-outline">＋ New Group</a>
+            <a href="{{ route('teacher.sections.index') }}" class="btn-outline" style="border-color:#a5b4fc;color:#4f46e5;">🏫 Sections</a>
             <a href="{{ route('teacher.projects.create') }}" class="btn-primary">＋ New Project</a>
         </div>
     </div>
@@ -44,6 +45,10 @@
 
         <div class="stat-card">
             ⏳ <strong>{{ $pendingGrades }}</strong> Pending Grades
+        </div>
+
+        <div class="stat-card">
+            🏫 <strong>{{ $totalSections }}</strong> Sections
         </div>
 
     </div>
@@ -141,6 +146,54 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            {{-- SECTIONS --}}
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">🏫 Your Sections</div>
+                    <a href="{{ route('teacher.sections.index') }}" class="panel-action">Manage →</a>
+                </div>
+                @if($sections->isEmpty())
+                    <div style="padding:1.5rem;text-align:center;color:#9ca3af;font-size:.88rem;">
+                        No sections yet.
+                        <a href="{{ route('teacher.sections.index') }}" style="color:#4f46e5;font-weight:600;text-decoration:none;">Create one →</a>
+                    </div>
+                @else
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Section</th>
+                            <th>Code</th>
+                            <th>Students</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($sections as $section)
+                            <tr>
+                                <td>
+                                    <strong>{{ $section->name }}</strong>
+                                    @if($section->semester)
+                                        <div style="font-size:.75rem;color:#9ca3af;">{{ $section->semester }}</div>
+                                    @endif
+                                </td>
+                                <td>
+                                    <span style="font-family:monospace;font-size:.85rem;font-weight:700;
+                                                 color:#4f46e5;background:#eef2ff;padding:.2rem .5rem;
+                                                 border-radius:6px;letter-spacing:.1em;">
+                                        {{ $section->code }}
+                                    </span>
+                                </td>
+                                <td>{{ $section->students_count }}</td>
+                                <td>
+                                    <a href="{{ route('teacher.sections.show', $section->id) }}" class="action-btn">View</a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                @endif
             </div>
 
         </div>
